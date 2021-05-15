@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "decode ireal files",
   "main": "main.js",
-  "author": "",
-  "license": "ISC"
+  "author": "1ceb3rg",
+  "license": "MIT"
 }
