@@ -1,0 +1,8 @@
+{
+  "name": "irealdecode",
+  "version": "1.0.0",
+  "description": "decode ireal files",
+  "main": "main.js",
+  "author": "",
+  "license": "ISC"
+}
