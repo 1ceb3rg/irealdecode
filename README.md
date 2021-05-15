@@ -1,6 +1,6 @@
 # Decode iRealB
 
-Return an array contain a the song or songs from a an `ireal://` link
+Return an array containing the song or songs from an `ireal://` link
 
 ## Usage
 
