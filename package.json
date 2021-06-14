@@ -2,12 +2,21 @@
   "name": "irealdecode",
   "version": "1.0.0",
   "description": "decode ireal files",
-  "keywords": ["real book","irealpro","irealb"],
-  "main": "main.js",
+  "keywords": [
+    "real book",
+    "irealpro",
+    "irealb"
+  ],
+  "main": "dist/main.js",
   "author": "1ceb3rg",
   "repository": {
     "type": "git",
     "url": "https://github.com/1ceb3rg/irealdecode"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^15.12.2",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
+  }
 }
