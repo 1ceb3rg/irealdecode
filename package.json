@@ -4,7 +4,7 @@
   "description": "decode ireal files",
   "keywords": [
     "real book",
-    "irealpro",
+    "ireal",
     "irealb"
   ],
   "main": "dist/main.js",
@@ -14,6 +14,7 @@
     "url": "https://github.com/1ceb3rg/irealdecode"
   },
   "license": "MIT",
+
   "devDependencies": {
     "@types/node": "^15.12.2",
     "ts-node": "^10.0.0",
