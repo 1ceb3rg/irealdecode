@@ -1,20 +1,7 @@
-declare type Note = "A" | "B" | "C" | "D" | "E" | "F" | "G";
-declare type Sign = "" | "b" | "#";
-declare type Tonality = "" | "-";
-declare type Key = `${Note}${Sign}${Tonality}`;
-interface IReal {
-    ireallink: string;
-    name: string;
-    artist: string;
-    style: string;
-    key: Key;
-    tempo: string;
-    playlist?: string;
-    playbackStyle: string;
-    playbackNumTimes: string;
-    changes: string;
-}
+import { IReal, IRealPlaylist, MajorKey, MinorKey } from "./types";
+export declare function transposeIrealString(irealLink: string, transpose: MajorKey | MinorKey): string | undefined;
 export declare function encodeIreal(ireal: IReal): string;
-export declare function decodeIreal(link: string): IReal[];
-export {};
+export declare function detectPlaylist(link: string): string | undefined;
+export declare function decodeIreal(link: string): IReal | undefined;
+export declare function decodeIrealPlaylist(link: string): Promise<IRealPlaylist>;
 //# sourceMappingURL=main.d.ts.map
