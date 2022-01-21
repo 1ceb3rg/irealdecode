@@ -30,7 +30,7 @@ export type KeyNote =
 // export type Sign = "" | "b" | "#";
 export type Tonality = "" | "-";
 export type Key = MinorKey|MajorKey;
-export type Transposition="0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"
+export type Transposition="0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|""
 export type Tempo =`${number}`
 export type PlaybackNumTimes=`${number}`
 export interface IReal {
@@ -45,5 +45,6 @@ export interface IReal {
   playlist?: string;
   playbackStyle?: string;
   playbackNumTimes?: string;
+  oldForm?:boolean
   
 }

@@ -8,15 +8,22 @@
     "irealb"
   ],
   "main": "dist/main.js",
+  "scripts": {
+    "dev": "tsc --w",
+    "build": "tsc",
+    "test": "jest"
+  },
   "author": "1ceb3rg",
   "repository": {
     "type": "git",
     "url": "https://github.com/1ceb3rg/irealdecode"
   },
   "license": "MIT",
-
   "devDependencies": {
+    "@types/jest": "^27.4.0",
     "@types/node": "^15.12.2",
+    "jest": "^27.4.7",
+    "ts-jest": "^27.1.3",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.2"
   }

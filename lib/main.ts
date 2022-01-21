@@ -5,8 +5,8 @@ const fixedEncodeURIComponent = (string: string): string => {
   });
 };
 
-// Regex to to check for ireal song strings
-const SongUrlRegex= /^irealb\w*:\/\/[^=]*=[^=]*==[^=]*=[^=]*=([^=]*)?[^=]*=[^=]*=[^=]*=[^=]*=[^=]*$/
+// Regex to to check for ireal song
+const SongUrlRegex= /^ireal(b|book):\/\/[^=]*=[^=]*==[^=]*=[^=]*=([^=]*)?[^=]*=[^=]*=[^=]*=[^=]*=[^=]*$/
 
 // Keys with their transposition number for IReal
 const MajorKeys: Record<MajorKey, number> = {
@@ -43,7 +43,7 @@ Object.freeze(MinorKeys);
 const Keys = { ...MajorKeys, ...MinorKeys };
 Object.freeze(Keys);
 
-// transpose an encoded iRealString
+// Transpose an encoded iRealString. Only works with the irealb:// links (new format)
 export function transposeIrealString(
   irealLink: string,
   transpose: MajorKey | MinorKey
@@ -60,6 +60,7 @@ export function transposeIrealString(
 }
 //encode an ireal URL from an IReal object
 export function encodeIreal(ireal: IReal): string  {
+  if(ireal?.oldForm)return `irealbook://${ireal.title}=${ireal.artist}=${ireal.style}=${ireal.key}=n=${ireal.changes}`
   return `irealb://${fixedEncodeURIComponent(
     ireal.title
   )}=${fixedEncodeURIComponent(ireal.artist)}==${fixedEncodeURIComponent(
@@ -80,7 +81,8 @@ function makeIreal(irealString: string, isOldForm?: boolean) {
         artist: data[1].trim(),
         style: data[3].trim(),
         key: data[4].trim() as Key,
-        changes: data[6],
+        changes: data[5],
+        oldForm:true
       }
     : {
         title: data[0].trim(),
@@ -94,19 +96,21 @@ function makeIreal(irealString: string, isOldForm?: boolean) {
         playbackNumTimes: data[9] as PlaybackNumTimes || "3",
       };
 }
-// detect if an item is a playlist
+// Detect if an item is a playlist
 export function detectPlaylist(link: string): string | undefined {
-  const playlist = /(.*)===([^=]*)$/.exec(decodeURIComponent(link));
+  const playlist = /(?<=ireal(b|book):\/\/([^=]*=[^=]*==[^=]*=[^=]*=([^=]*)?[^=]*=[^=]*=[^=]*=[^=]*=[^=]*===)*)[^=]*$/.exec(decodeURIComponent(link));
+  
   return playlist ? playlist[0] : undefined;
 }
 
 // return an IReal object if the link is a single song, or undefined if it's not
 export function decodeIreal(link: string): IReal | undefined {
-  if (!SongUrlRegex.test(link)) return undefined;
+  const isOldForm=/irealbook/.test(link)
+  if (!SongUrlRegex.test(link)&&!isOldForm) return undefined;
   const decoded = decodeURIComponent(link);
     return makeIreal(
       decoded.replace(/irealb\w*:\/\//, ""),
-      /irealbook/.test(decoded)
+      isOldForm
     );
 }
 
@@ -119,15 +123,19 @@ export function decodeIrealPlaylist(link: string): Promise<IRealPlaylist> {
     const playlist = detectPlaylist(link);
     // decode the URL format and remove the link prefix
     const decoded = decodeURIComponent(link.replace(/irealb\w*:\/\//, ""));
+    // check if it's a playlist
     if (playlist) {
       const data = /(.*)===([^=]*)$/.exec(decoded);
       if (data)
-        resolve({
+      {
+        const result={
           title: playlist,
           songs: data[1]
             .split("===")
-            ?.map((song): IReal => makeIreal(song, isOldForm)),
-        });
+            ?.map((song): IReal =>makeIreal(song,isOldForm)),
+        };
+        result.songs.every(song=>song!==undefined)?resolve(result):reject('Cannot parse playlist')
+      }
       else reject("Cannot parse playlist");
     } else reject("Is not a playlist");
   });
