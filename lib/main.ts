@@ -4,9 +4,7 @@ const fixedEncodeURIComponent = (string: string): string => {
     return "%" + c.charCodeAt(0).toString(16);
   });
 };
-
-// Regex to to check for ireal song
-const SongUrlRegex= /^ireal(b|book):\/\/[^=]*=[^=]*==[^=]*=[^=]*=([^=]*)?[^=]*=[^=]*=[^=]*=[^=]*=[^=]*$/
+const DecodedSongUrlRegex=/^ireal(b|book):\/\/[^=]+=[^=]+==[^=]+=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?/
 
 // Keys with their transposition number for IReal
 const MajorKeys: Record<MajorKey, number> = {
@@ -48,7 +46,7 @@ export function transposeIrealString(
   irealLink: string,
   transpose: MajorKey | MinorKey
 ) {
-  if (!SongUrlRegex.test(irealLink)) return undefined;
+  if (!DecodedSongUrlRegex.test(decodeURIComponent(irealLink))) return undefined;
   return (
     /irealbook/.test(irealLink)
       ? encodeIreal(decodeIreal(irealLink)!)
@@ -96,20 +94,20 @@ function makeIreal(irealString: string, isOldForm?: boolean) {
         playbackNumTimes: data[9] as PlaybackNumTimes || "3",
       };
 }
-// Detect if an item is a playlist
+// Detect if an item is a playlist allow for maximum playlists length of 1400 songs
 export function detectPlaylist(link: string): string | undefined {
-  const playlist = /(?<=ireal(b|book):\/\/([^=]*=[^=]*==[^=]*=[^=]*=([^=]*)?[^=]*=[^=]*=[^=]*=[^=]*=[^=]*===)*)[^=]*$/.exec(decodeURIComponent(link));
+  const playlist = /(?<=^ireal(b|book):\/\/([^=]+=[^=]+==[^=]+=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?===){1,1400})[^=]*$/.exec(decodeURIComponent(link));
   
   return playlist ? playlist[0] : undefined;
 }
 
 // return an IReal object if the link is a single song, or undefined if it's not
 export function decodeIreal(link: string): IReal | undefined {
-  const isOldForm=/irealbook/.test(link)
-  if (!SongUrlRegex.test(link)&&!isOldForm) return undefined;
-  const decoded = decodeURIComponent(link);
+  const isOldForm=/^irealbook/.test(link)
+  const decoded=decodeURIComponent(link)
+  if (!DecodedSongUrlRegex.test(decoded)&&!isOldForm) return undefined;
     return makeIreal(
-      decoded.replace(/irealb\w*:\/\//, ""),
+      decoded.replace(/^irealb\w*:\/\//, ""),
       isOldForm
     );
 }
@@ -119,10 +117,10 @@ export function decodeIreal(link: string): IReal | undefined {
 export function decodeIrealPlaylist(link: string): Promise<IRealPlaylist> {
   return new Promise((resolve, reject) => {
     //check for the old format
-    const isOldForm = /irealbook/.test(link);
+    const isOldForm = /^irealbook/.test(link);
     const playlist = detectPlaylist(link);
     // decode the URL format and remove the link prefix
-    const decoded = decodeURIComponent(link.replace(/irealb\w*:\/\//, ""));
+    const decoded = decodeURIComponent(link.replace(/^irealb\w*:\/\//, ""));
     // check if it's a playlist
     if (playlist) {
       const data = /(.*)===([^=]*)$/.exec(decoded);
