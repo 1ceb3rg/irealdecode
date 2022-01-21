@@ -9,7 +9,7 @@
   ],
   "main": "dist/main.js",
   "scripts": {
-    "dev": "tsc --w",
+    "dev": "jest --watchAll",
     "build": "tsc",
     "test": "jest"
   },
