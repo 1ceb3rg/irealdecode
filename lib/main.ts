@@ -101,7 +101,7 @@ function makeIreal(irealString: string, isOldForm?: boolean) {
 }
 // Detect if an item is a playlist
 export function detectPlaylist(link: string): string | undefined {
-  const playlist = /(?<=^ireal(b|book):\/\/([^=]*=[^=]*==[^=]*=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?===)*)[^=]*$/.exec(decodeURIComponent(link));
+  const playlist = /(?<=^ireal(b|book):\/\/([^=]+=[^=]+==[^=]+=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?===)*)[^=]*$/.exec(decodeURIComponent(link));
   
   return playlist ? playlist[0] : undefined;
 }
