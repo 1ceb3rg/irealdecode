@@ -4,12 +4,7 @@ const fixedEncodeURIComponent = (string: string): string => {
     return "%" + c.charCodeAt(0).toString(16);
   });
 };
-/*
-'One Note Samba=Jobim Antonio-Carlos==Bossa Nova=Bb==1r34LbKcu7|QyX74D-7XX7-D|QyX11#7B|yQX7-C|QyX7bD|QyyQ|Db4TA*[yX7-DQ|B7#bA|QyX7^bE|QyXb7B|QyX7-F|QyX117XyQ|yX7-CX7^bDXyQ|CbA|QyX7-bEB*[]yQX6bBZL11#7B 7-7XyQ|7bD|QbD|Qy LZC#*[] 7F 7hC|QyX^7B|QyX7#F|QyX7-AD-7XlcKQyQyX11C-7XyyX7-C|QyX7bD|QXy7-D|QyX11#7B|QQ|B7#|QyX7|QyX7yQ|BbX7C|QyX6bD|QyXb7A|QyX7^bE|QyX7yQ|B^X7-F|Bb6XyQZ =Jazz-Bossa Nova=0=3'
- */
-// Regex to to check for ireal song
-const SongUrlRegex=       /^ireal(b|book):\/\/[^=]*=[^=]*==[^=]*=[^=]*=([^=]*)?[^=]*=[^=]*=[^=]*=[^=]*=[^=]*$/
-const DecodedSongUrlRegex=/^ireal(b|book):\/\/[^=]*=[^=]*==[^=]*=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?/
+const DecodedSongUrlRegex=/^ireal(b|book):\/\/[^=]+=[^=]+==[^=]+=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?/
 
 // Keys with their transposition number for IReal
 const MajorKeys: Record<MajorKey, number> = {
@@ -99,9 +94,9 @@ function makeIreal(irealString: string, isOldForm?: boolean) {
         playbackNumTimes: data[9] as PlaybackNumTimes || "3",
       };
 }
-// Detect if an item is a playlist
+// Detect if an item is a playlist allow for maximum playlists length of 1400 songs
 export function detectPlaylist(link: string): string | undefined {
-  const playlist = /(?<=^ireal(b|book):\/\/([^=]+=[^=]+==[^=]+=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?===)*)[^=]*$/.exec(decodeURIComponent(link));
+  const playlist = /(?<=^ireal(b|book):\/\/([^=]+=[^=]+==[^=]+=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?===){1,1400})[^=]*$/.exec(decodeURIComponent(link));
   
   return playlist ? playlist[0] : undefined;
 }
