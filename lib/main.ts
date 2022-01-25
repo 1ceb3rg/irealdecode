@@ -53,7 +53,7 @@ export function transposeIrealString(
     /irealbook/.test(irealLink)
       ? encodeIreal(decodeIreal(irealLink)!)
       : irealLink
-  ).split('=').reduce((newUrl,section,index)=>newUrl+(index===5?section:Keys[transpose].toString()));
+  ).split('=').map((section,index)=>index!==5?section:Keys[transpose].toString()).join('=');
 
   
 }
