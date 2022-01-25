@@ -1,2 +1,4 @@
 lib
 tests
+jest.config.js 
+.github
