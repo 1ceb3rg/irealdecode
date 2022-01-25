@@ -46,15 +46,16 @@ export function transposeIrealString(
   irealLink: string,
   transpose: MajorKey | MinorKey
 ) {
+  
   if (!DecodedSongUrlRegex.test(decodeURIComponent(irealLink))) return undefined;
+  
   return (
     /irealbook/.test(irealLink)
       ? encodeIreal(decodeIreal(irealLink)!)
       : irealLink
-  ).replace(
-    /(?<=irealb\w*:\/\/[^=]*=[^=]*==[^=]*=[^=]*=)([^=]*)?(?=[^=]*=[^=]*=[^=]*=[^=]*=[^=]*)/,
-    Keys[transpose].toString()
-  );
+  ).split('=').reduce((newUrl,section,index)=>newUrl+(index===5?section:Keys[transpose].toString()));
+
+  
 }
 //encode an ireal URL from an IReal object
 export function encodeIreal(ireal: IReal): string  {
@@ -96,8 +97,9 @@ function makeIreal(irealString: string, isOldForm?: boolean) {
 }
 // Detect if an item is a playlist allow for maximum playlists length of 1400 songs
 export function detectPlaylist(link: string): string | undefined {
-  const playlist = /(?<=^ireal(b|book):\/\/([^=]+=[^=]+==[^=]+=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?===){1,1400})[^=]*$/.exec(decodeURIComponent(link));
-  
+  const playlist = /^(ireal(b|book):\/\/([^=]+=[^=]+==[^=]+=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?===){1,1400})([^=]*)$/.exec(decodeURIComponent(link));
+  // playlist&&console.log(playlist![0])
+
   return playlist ? playlist[0] : undefined;
 }
 
@@ -123,18 +125,13 @@ export function decodeIrealPlaylist(link: string): Promise<IRealPlaylist> {
     const decoded = decodeURIComponent(link.replace(/^irealb\w*:\/\//, ""));
     // check if it's a playlist
     if (playlist) {
-      const data = /(.*)===([^=]*)$/.exec(decoded);
-      if (data)
-      {
         const result={
           title: playlist,
-          songs: data[1]
+          songs: decoded.slice(0,decoded.lastIndexOf('==='))
             .split("===")
             ?.map((song): IReal =>makeIreal(song,isOldForm)),
         };
         result.songs.every(song=>song!==undefined)?resolve(result):reject('Cannot parse playlist')
-      }
-      else reject("Cannot parse playlist");
     } else reject("Is not a playlist");
   });
 }
