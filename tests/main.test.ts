@@ -64,7 +64,8 @@ test("encodeIreal() returns a valid ireal:// url", () => {
 });
 
 test("detectPlaylists() detects a playlist and returns it's title",()=>{
-expect(detectPlaylist(playlistString)).toMatch('Stevie Wonder 30')
+expect(detectPlaylist(playlistString)).toBe('Stevie Wonder 30')
+
 expect(detectPlaylist('ireal://tseatafsdf===asdfsfs')).toEqual(undefined)
 
 });
