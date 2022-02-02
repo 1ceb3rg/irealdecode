@@ -72,7 +72,7 @@ expect(detectPlaylist('ireal://tseatafsdf===asdfsfs')).toEqual(undefined)
 test("decodeIrealPlaylist() returns an playlist object",async ()=>{
   const playlist = await decodeIrealPlaylist(playlistString)
 
-  expect(playlist.title).toMatch('Stevie Wonder 30')
+  expect(playlist.title).toBe('Stevie Wonder 30')
   expect (playlist.songs).toHaveLength(30)
   expect(playlist.songs).toContainEqual({
     title: 'You Are The Sunshine Of My Life',

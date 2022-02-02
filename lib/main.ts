@@ -99,8 +99,8 @@ function makeIreal(irealString: string, isOldForm?: boolean) {
 export function detectPlaylist(link: string): string | undefined {
   const playlist = /^(ireal(b|book):\/\/([^=]+=[^=]+==[^=]+=[A-Z](b|\#)?-?=\d?\d?=1r34LbKcu7[^=]*=[^=]*=\d\d?\d?=\d\d?\d?===){1,1400})([^=]*)$/.exec(decodeURIComponent(link));
   // playlist&&console.log(playlist![0])
-
-  return playlist ? playlist[0] : undefined;
+  
+  return playlist ? playlist[5] : undefined;
 }
 
 // return an IReal object if the link is a single song, or undefined if it's not
